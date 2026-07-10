@@ -37,9 +37,11 @@ describe('ATS schemas', () => {
 
 describe('SchemaRegistry (ats)', () => {
 	it('registers every ATS schema name', () => {
+		const names = SchemaRegistry.names();
 		for (const name of ['ats-score', 'ats-review', 'ats-question']) {
 			assert.equal(SchemaRegistry.has(name), true);
+			assert.ok(names.includes(name));
 		}
-		assert.deepEqual(SchemaRegistry.names(), ['ats-question', 'ats-review', 'ats-score', 'resume']);
+		assert.deepEqual(names, [...names].sort()); // names() is sorted
 	});
 });

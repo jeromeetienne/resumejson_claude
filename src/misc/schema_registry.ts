@@ -4,6 +4,7 @@ import { z } from 'zod';
 // local imports
 import { ResumeJsonSchema } from './resume_schemas.js';
 import { AtsScoreSchema, AtsReviewSchema, AtsQuestionSchema } from './ats_schemas.js';
+import { JobPostingSchema, JobMatchSchema } from './job_schemas.js';
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,6 +23,8 @@ export class SchemaRegistry {
 		'ats-score': AtsScoreSchema,
 		'ats-review': AtsReviewSchema,
 		'ats-question': AtsQuestionSchema,
+		'job-posting': JobPostingSchema,
+		'job-match': JobMatchSchema,
 	};
 
 	/**

@@ -1,0 +1,1 @@
+../../../dotclaude_folder/skills/job-search/SKILL.md
