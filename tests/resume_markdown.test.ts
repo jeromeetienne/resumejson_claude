@@ -34,8 +34,11 @@ describe('ToMarkdownCommand.render', () => {
 		assert.ok(markdown.includes('Ada Lovelace'));
 	});
 
-	it('throws on a resume with a wrong-typed field', () => {
+	it('throws a formatted schema error on a wrong-typed field', () => {
 		const wrong = { ...SAMPLE_RESUME, basics: { ...SAMPLE_RESUME.basics, name: 42 } };
-		assert.throws(() => ToMarkdownCommand.render(JSON.stringify(wrong)));
+		assert.throws(
+			() => ToMarkdownCommand.render(JSON.stringify(wrong)),
+			/resume does not match schema[\s\S]*basics\.name/,
+		);
 	});
 });

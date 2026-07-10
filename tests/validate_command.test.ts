@@ -38,3 +38,22 @@ describe('ValidateCommand.validate', () => {
 		assert.ok(result.errors[0].startsWith('invalid JSON'));
 	});
 });
+
+describe('ValidateCommand.parse', () => {
+	it('returns the parsed value on success', () => {
+		const parsed = ValidateCommand.parse(JSON.stringify(SAMPLE_RESUME), ResumeJsonSchema, 'resume');
+		assert.equal(parsed.basics?.name, 'Ada Lovelace');
+	});
+
+	it('throws a formatted, pathed error on a wrong-typed field', () => {
+		const wrong = { ...SAMPLE_RESUME, basics: { ...SAMPLE_RESUME.basics, name: 42 } };
+		assert.throws(
+			() => ValidateCommand.parse(JSON.stringify(wrong), ResumeJsonSchema, 'resume'),
+			/resume does not match schema[\s\S]*basics\.name: Expected string/,
+		);
+	});
+
+	it('throws on malformed JSON', () => {
+		assert.throws(() => ValidateCommand.parse('{ bad', ResumeJsonSchema), /invalid JSON/);
+	});
+});

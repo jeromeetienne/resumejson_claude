@@ -1,6 +1,7 @@
 // local imports
 import { ResumeJsonSchema } from '../misc/resume_schemas.js';
 import { ResumeMarkdown } from '../misc/resume_markdown.js';
+import { ValidateCommand } from './validate_command.js';
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,8 +23,7 @@ export class ToMarkdownCommand {
 	 * @throws If the text is not valid JSON or does not conform to {@link ResumeJsonSchema}.
 	 */
 	static render(jsonText: string): string {
-		const data: unknown = JSON.parse(jsonText);
-		const resumeJson = ResumeJsonSchema.parse(data);
+		const resumeJson = ValidateCommand.parse(jsonText, ResumeJsonSchema, 'resume');
 		return ResumeMarkdown.render(resumeJson);
 	}
 }

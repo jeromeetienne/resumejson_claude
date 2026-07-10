@@ -17,10 +17,11 @@ export class UtilsPdf {
 	 * @returns The generated PDF as a Buffer.
 	 */
 	static async html2pdf(renderedHtml: string): Promise<Buffer> {
+		// No local-file-access flags: the template references no local files, so
+		// granting page JS filesystem access would only widen the blast radius of
+		// any remote resource it loads. --no-sandbox stays for headless/root envs.
 		const browser = await Puppeteer.launch({
 			args: [
-				'--allow-file-access-from-files',
-				'--enable-local-file-accesses',
 				'--no-sandbox',
 				'--disable-setuid-sandbox',
 			],

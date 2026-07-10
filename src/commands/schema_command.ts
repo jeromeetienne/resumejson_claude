@@ -22,7 +22,10 @@ export class SchemaCommand {
 	 * @returns The JSON Schema as a formatted JSON string.
 	 */
 	static render(schema: z.ZodTypeAny, name: string): string {
-		const jsonSchema = zodToJsonSchema(schema, { name, target: 'jsonSchema7' });
-		return JSON.stringify(jsonSchema, null, 2);
+		// Inline everything ($refStrategy: 'none') and skip `name` so the output is a
+		// single self-contained schema, not a `{ $ref, definitions }` wrapper — easier
+		// for a skill to read as "the contract".
+		const jsonSchema = zodToJsonSchema(schema, { $refStrategy: 'none', target: 'jsonSchema7' }) as Record<string, unknown>;
+		return JSON.stringify({ ...jsonSchema, title: name }, null, 2);
 	}
 }

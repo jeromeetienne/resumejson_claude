@@ -1,6 +1,6 @@
 // node imports
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, rmdirSync, symlinkSync, unlinkSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 
 // local imports
 import { PROJECT_ROOT } from '../misc/project_root.js';
@@ -182,6 +182,11 @@ export class InstallCommand {
 	 * Mirrors every file under `sourceRoot` into `targetRoot` as a relative symlink
 	 * pointing back at the source, replacing whatever (file or symlink) is already there.
 	 *
+	 * Assumes `targetRoot` and `sourceRoot` share a filesystem tree with no symlink
+	 * components between them (the normal in-repo `.claude` case). If the target is
+	 * reached through a symlink (e.g. a temp dir under macOS `/var` → `/private/var`),
+	 * the relative links can dangle — use `--mode copy` for such targets.
+	 *
 	 * @param sourceRoot The directory whose files are linked.
 	 * @param targetRoot The directory the symlinks are written into.
 	 * @returns The relative paths that were linked.
@@ -262,7 +267,9 @@ export class InstallCommand {
 	 */
 	private static pruneEmptyDirs(dir: string, stopAt: string): void {
 		let current = dir;
-		while (current !== stopAt && current.startsWith(stopAt) === true) {
+		// `stopAt + sep` so a sibling that merely shares the prefix (e.g. `.claude2`
+		// vs `.claude`) is never treated as inside `stopAt`.
+		while (current !== stopAt && current.startsWith(stopAt + sep) === true) {
 			try {
 				rmdirSync(current);
 			} catch {

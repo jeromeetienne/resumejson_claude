@@ -6,6 +6,7 @@ import { PROJECT_ROOT } from '../misc/project_root.js';
 import { ResumeJsonSchema } from '../misc/resume_schemas.js';
 import { ResumeHtml } from '../misc/resume_html.js';
 import { UtilsPdf } from '../misc/utils_pdf.js';
+import { ValidateCommand } from './validate_command.js';
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,7 +38,7 @@ export class ToPdfCommand {
 	 * @throws If the text is not valid JSON or does not conform to {@link ResumeJsonSchema}.
 	 */
 	static renderHtml(jsonText: string, template: string): string {
-		const resumeJson = ResumeJsonSchema.parse(JSON.parse(jsonText));
+		const resumeJson = ValidateCommand.parse(jsonText, ResumeJsonSchema, 'resume');
 		return ResumeHtml.render(resumeJson, template);
 	}
 
