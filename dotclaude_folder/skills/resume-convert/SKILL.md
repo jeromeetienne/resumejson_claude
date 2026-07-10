@@ -33,6 +33,7 @@ Once the package is installed, `npx resumejson_claude <command>` works the same.
 | `schema resume` | Print the JSON Schema for `ResumeJson` — the exact contract to produce |
 | `validate -i <file> --schema resume` | Zod-validate a JSON file; exits non-zero and lists problems on failure |
 | `to_markdown -i <resume.json> -o <out.md\|->` | Render `ResumeJson` → Markdown (deterministic) |
+| `to_pdf -i <resume.json> -o <out.pdf>` | Render `ResumeJson` → PDF (deterministic; Mustache + headless Chrome) |
 
 ## The contract: `ResumeJson`
 
@@ -72,6 +73,19 @@ npm run resumejson_claude -- to_markdown -i <name>.resume.json -o <name>.resume.
 
 (Use `-o -` to stream to stdout.) It validates the input first, so a malformed
 resume fails loudly rather than rendering garbage.
+
+### `to_pdf` — ResumeJson → PDF (deterministic, CLI)
+
+No AI. Renders the resume through a Mustache HTML template and prints it with
+headless Chrome:
+
+```bash
+npm run resumejson_claude -- to_pdf -i <name>.resume.json -o <name>.resume.pdf
+```
+
+Pass `-t <template.mustache.html>` to use a custom template. Requires a headless
+Chrome (installed with Puppeteer); the default template pulls Bootstrap from a
+CDN, so PDF rendering needs network access.
 
 ## Validate + self-correct (required after every AI step)
 

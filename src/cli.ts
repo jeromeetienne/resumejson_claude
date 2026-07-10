@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // node imports
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 
 // npm imports
 import { Command } from 'commander';
@@ -14,6 +14,7 @@ import { UtilsIo } from './misc/utils_io.js';
 import { ValidateCommand } from './commands/validate_command.js';
 import { SchemaCommand } from './commands/schema_command.js';
 import { ToMarkdownCommand } from './commands/to_markdown_command.js';
+import { ToPdfCommand } from './commands/to_pdf_command.js';
 import { InstallCommand, type InstallMode } from './commands/install_command.js';
 
 /** Wire up the subcommands and run them. */
@@ -64,6 +65,20 @@ async function main(): Promise<void> {
 			const jsonText = UtilsIo.readInput(options.input);
 			const markdown = ToMarkdownCommand.render(jsonText);
 			UtilsIo.writeOutput(options.output, markdown);
+		});
+
+	program
+		.command('to_pdf')
+		.description('Render a ResumeJson document to a PDF (Mustache template + headless Chrome)')
+		.requiredOption('-i, --input <file>', 'input ResumeJson file (or - for stdin)')
+		.requiredOption('-o, --output <file>', 'output PDF file')
+		.option('-t, --template <file>', 'Mustache HTML template', ToPdfCommand.defaultTemplatePath())
+		.action(async (options: { input: string; output: string; template: string }) => {
+			const jsonText = UtilsIo.readInput(options.input);
+			const template = readFileSync(resolve(options.template), 'utf8');
+			const pdf = await ToPdfCommand.render(jsonText, template);
+			writeFileSync(resolve(options.output), pdf);
+			console.log(Chalk.green(`✓ wrote ${options.output}`));
 		});
 
 	program
