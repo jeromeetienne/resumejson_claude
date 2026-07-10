@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 // local imports
 import { ResumeJsonSchema } from './resume_schemas.js';
+import { AtsScoreSchema, AtsReviewSchema, AtsQuestionSchema } from './ats_schemas.js';
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -17,7 +18,10 @@ import { ResumeJsonSchema } from './resume_schemas.js';
  */
 export class SchemaRegistry {
 	private static readonly schemas: Record<string, z.ZodTypeAny> = {
-		resume: ResumeJsonSchema,
+		'resume': ResumeJsonSchema,
+		'ats-score': AtsScoreSchema,
+		'ats-review': AtsReviewSchema,
+		'ats-question': AtsQuestionSchema,
 	};
 
 	/**
